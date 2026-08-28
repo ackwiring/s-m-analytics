@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: #ffffff;
+  --bg-card: #f8fafc;
+  --bg-sidebar: #0a192f;
+  --border-black: #0f172a;
+  --title-orange: #ea580c;
+  --subtitle-teal: #0d9488;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Custom UI Utility Styles */
+.app-card {
+  background-color: #f8fafc;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 0.9);
+}
+
+.app-card-sm {
+  background-color: #f1f5f9;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+}
+
+.title-orange {
+  color: #ea580c;
+  font-weight: 700;
+}
+
+.subtitle-teal {
+  color: #0d9488;
+  font-weight: 600;
+}
+
+.border-sharp {
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background-color: #ea580c;
+  color: #ffffff;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 1);
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #c2410c;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px rgba(15, 23, 42, 1);
+}
+
+.btn-primary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px rgba(15, 23, 42, 1);
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 0.8);
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-secondary:hover {
+  background-color: #f1f5f9;
+}
+
