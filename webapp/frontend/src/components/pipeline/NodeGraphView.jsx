@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CheckCircle2, Clock, Play, ArrowRight, FileText, Database, ShieldAlert, Cpu, Terminal } from "lucide-react";
+import InfoTooltip from "../InfoTooltip";
 
 export default function NodeGraphView({ appState, onInspectNode }) {
   const nodes = appState?.pipeline_nodes || [];
@@ -32,42 +33,44 @@ export default function NodeGraphView({ appState, onInspectNode }) {
             return (
               <React.Fragment key={node.name}>
                 {/* Node Box */}
-                <div 
-                  onClick={() => onInspectNode(node)}
-                  className={`flex-1 min-w-[180px] p-4 rounded-md border-2 cursor-pointer transition-all hover:scale-102 ${
-                    isCompleted
-                      ? "bg-slate-800/90 border-emerald-500"
-                      : isRunning
-                      ? "bg-slate-800 border-[#ea580c] animate-pulse"
-                      : isError
-                      ? "bg-red-950/80 border-red-500"
-                      : "bg-slate-800/40 border-slate-700 opacity-60"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#0d9488]">
-                      {node.category}
-                    </span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
-                      isCompleted ? "bg-emerald-950 text-emerald-300 border border-emerald-700" :
-                      isRunning ? "bg-amber-950 text-amber-300 border border-amber-700" :
-                      isError ? "bg-red-900 text-red-200" : "bg-slate-700 text-slate-300"
-                    }`}>
-                      {node.status}
-                    </span>
-                  </div>
+                <InfoTooltip text={`Click to open the inspector for this skill: its identifier, version, execution status/timing, and full console logs. Currently: ${node.status}.`} wrapperClassName="flex-1 min-w-[180px]">
+                  <div
+                    onClick={() => onInspectNode(node)}
+                    className={`w-full h-full p-4 rounded-md border-2 cursor-pointer transition-all hover:scale-102 ${
+                      isCompleted
+                        ? "bg-slate-800/90 border-emerald-500"
+                        : isRunning
+                        ? "bg-slate-800 border-[#ea580c] animate-pulse"
+                        : isError
+                        ? "bg-red-950/80 border-red-500"
+                        : "bg-slate-800/40 border-slate-700 opacity-60"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#0d9488]">
+                        {node.category}
+                      </span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
+                        isCompleted ? "bg-emerald-950 text-emerald-300 border border-emerald-700" :
+                        isRunning ? "bg-amber-950 text-amber-300 border border-amber-700" :
+                        isError ? "bg-red-900 text-red-200" : "bg-slate-700 text-slate-300"
+                      }`}>
+                        {node.status}
+                      </span>
+                    </div>
 
-                  <h4 className="font-bold text-sm text-slate-100 mb-1 leading-snug">{node.display_name}</h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-2 mb-3">{node.description}</p>
+                    <h4 className="font-bold text-sm text-slate-100 mb-1 leading-snug">{node.display_name}</h4>
+                    <p className="text-[11px] text-slate-400 line-clamp-2 mb-3">{node.description}</p>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-700/80 pt-2">
-                    <span className="flex items-center gap-1 font-mono">
-                      <Clock className="w-3 h-3 text-slate-500" />
-                      {node.timing_ms > 0 ? `${node.timing_ms}ms` : "0ms"}
-                    </span>
-                    <span className="text-slate-400 hover:text-white underline">Inspect &rarr;</span>
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-700/80 pt-2">
+                      <span className="flex items-center gap-1 font-mono">
+                        <Clock className="w-3 h-3 text-slate-500" />
+                        {node.timing_ms > 0 ? `${node.timing_ms}ms` : "0ms"}
+                      </span>
+                      <span className="text-slate-400 hover:text-white underline">Inspect &rarr;</span>
+                    </div>
                   </div>
-                </div>
+                </InfoTooltip>
 
                 {/* Arrow Connector */}
                 {idx < nodes.length - 1 && (

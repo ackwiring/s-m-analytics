@@ -11,6 +11,10 @@ class STypeParameters(BaseModel):
     percentiles: List[float] = [20.0, 40.0, 60.0, 80.0]
     aggregation_field: str = "d1_Ranking"
     aggregation_type: str = "GRADE"
+    # Only meaningful when aggregation_type == "GRADE":
+    # "weighted_average" ranks bins by grade*weight / sum(weight) (metal concentration)
+    # "weighted_sum" ranks bins by sum(grade*weight) (total contained metal, matches legacy phase_file_generator.py)
+    grade_aggregation_method: str = "weighted_average"
     flex_rules: List[FlexOrderRule] = []
 
 class MTypeResult(BaseModel):
@@ -32,6 +36,7 @@ class STypePercentileResult(BaseModel):
     bin_distribution: List[Dict[str, Any]]
     grade_preservation: Dict[str, float] = {}
     mass_preservation_pct: float = 100.0
+    grade_aggregation_method: Optional[str] = None
 
 class PipelineNodeInfo(BaseModel):
     name: str

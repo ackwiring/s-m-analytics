@@ -1,5 +1,6 @@
 import React from "react";
 import { Download, FileArchive, CheckCircle2, ShieldAlert } from "lucide-react";
+import InfoTooltip from "./InfoTooltip";
 
 export default function ExportView({ appState }) {
   const handleDownload = () => {
@@ -40,13 +41,15 @@ export default function ExportView({ appState }) {
           </div>
         </div>
 
-        <button
-          onClick={handleDownload}
-          className="btn-primary px-8 py-3 text-base flex items-center gap-3 mx-auto cursor-pointer"
-        >
-          <Download className="w-5 h-5" />
-          <span>Download Files</span>
-        </button>
+        <InfoTooltip text="Downloads a single ZIP containing every phase file generated so far: the standard M-Type baseline, all calculated S-Type percentile runs, and their audit/verification reports.">
+          <button
+            onClick={handleDownload}
+            className="btn-primary px-8 py-3 text-base flex items-center gap-3 mx-auto cursor-pointer"
+          >
+            <Download className="w-5 h-5" />
+            <span>Download Files</span>
+          </button>
+        </InfoTooltip>
       </div>
     </div>
   );

@@ -1,13 +1,14 @@
 import React from "react";
 import { Layers, Sliders, BarChart3, Download, FileText, Database, ShieldCheck, X, Workflow } from "lucide-react";
+import InfoTooltip from "./InfoTooltip";
 
 export default function Sidebar({ activeTab, setActiveTab, appState, onClearDataset }) {
   const tabs = [
-    { id: "pipeline", label: "0. Workflow Pipeline", icon: Workflow, desc: "Modular DAG Skills" },
-    { id: "mtype", label: "1. Base M-Type Baseline", icon: Layers, desc: "Standard 1D Cutoff Bins" },
-    { id: "stype", label: "2. S-Type Parameter Tuning", icon: Sliders, desc: "Percentiles & Flex Rules" },
-    { id: "comparison", label: "3. Comparative Analytics", icon: BarChart3, desc: "Bin Reduction & Preservation" },
-    { id: "export", label: "4. Export Phase Files", icon: Download, desc: "COMET Package Download" },
+    { id: "pipeline", label: "0. Workflow Pipeline", icon: Workflow, desc: "Modular DAG Skills", tip: "View the orchestrator's DAG of skills, their run status, timing, and console logs for the current pipeline execution." },
+    { id: "mtype", label: "1. Base M-Type Baseline", icon: Layers, desc: "Standard 1D Cutoff Bins", tip: "View the unreduced 1-dimensional Cut-Off Grade baseline calculated directly from the uploaded block model, before any S-Type collapsing." },
+    { id: "stype", label: "2. S-Type Parameter Tuning", icon: Sliders, desc: "Percentiles & Flex Rules", tip: "Configure percentile cuts, the grade/quantity ranking driver, and per-dimension flex rules, then run the N-dimensional S-Type bin reduction." },
+    { id: "comparison", label: "3. Comparative Analytics", icon: BarChart3, desc: "Bin Reduction & Preservation", tip: "Compare the reduced S-Type bin distribution against the original M-Type baseline at each percentile cut, and check grade preservation." },
+    { id: "export", label: "4. Export Phase Files", icon: Download, desc: "COMET Package Download", tip: "Download a ZIP bundle of COMET-ready M-Type and S-Type phase files plus audit reports." },
   ];
 
   const appName = appState?.app_name || "M & S Type Analyzer";
@@ -34,21 +35,22 @@ export default function Sidebar({ activeTab, setActiveTab, appState, onClearData
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-start gap-3 p-3 rounded-md border text-left transition-all ${
-                  isActive
-                    ? "bg-[#1e293b] border-[#ea580c] text-white"
-                    : "bg-transparent border-transparent text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"
-                }`}
-              >
-                <Icon className={`w-5 h-5 mt-0.5 ${isActive ? "text-[#ea580c]" : "text-[#0d9488]"}`} />
-                <div>
-                  <div className="font-semibold text-sm leading-snug">{tab.label}</div>
-                  <div className="text-xs text-slate-400 font-normal">{tab.desc}</div>
-                </div>
-              </button>
+              <InfoTooltip key={tab.id} text={tab.tip} position="right" wrapperClassName="w-full block">
+                <button
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-start gap-3 p-3 rounded-md border text-left transition-all ${
+                    isActive
+                      ? "bg-[#1e293b] border-[#ea580c] text-white"
+                      : "bg-transparent border-transparent text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 mt-0.5 ${isActive ? "text-[#ea580c]" : "text-[#0d9488]"}`} />
+                  <div>
+                    <div className="font-semibold text-sm leading-snug">{tab.label}</div>
+                    <div className="text-xs text-slate-400 font-normal">{tab.desc}</div>
+                  </div>
+                </button>
+              </InfoTooltip>
             );
           })}
         </nav>
@@ -59,13 +61,14 @@ export default function Sidebar({ activeTab, setActiveTab, appState, onClearData
         <div className="flex items-center justify-between">
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Workspace</div>
           {hasLoadedDataset && (
-            <button
-              onClick={onClearDataset}
-              title="Unload dataset from memory"
-              className="text-[11px] text-slate-400 hover:text-red-400 flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded border border-slate-600"
-            >
-              <X className="w-3 h-3" /> Clear
-            </button>
+            <InfoTooltip text="Unloads the current block model dataset from memory (the config workbook stays loaded). Does not delete any files on disk." position="left">
+              <button
+                onClick={onClearDataset}
+                className="text-[11px] text-slate-400 hover:text-red-400 flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded border border-slate-600"
+              >
+                <X className="w-3 h-3" /> Clear
+              </button>
+            </InfoTooltip>
           )}
         </div>
         

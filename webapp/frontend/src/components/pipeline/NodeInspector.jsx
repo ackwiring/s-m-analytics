@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Clock, Terminal, CheckCircle2, AlertCircle } from "lucide-react";
+import InfoTooltip from "../InfoTooltip";
 
 export default function NodeInspector({ node, onClose }) {
   if (!node) return null;
@@ -14,12 +15,14 @@ export default function NodeInspector({ node, onClose }) {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d9488]">{node.category} Skill</span>
               <h3 className="text-lg font-bold text-white">{node.display_name}</h3>
             </div>
-            <button
-              onClick={onClose}
-              className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <InfoTooltip text="Closes this inspector panel. Does not stop or re-run the skill." position="left">
+              <button
+                onClick={onClose}
+                className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </InfoTooltip>
           </div>
 
           {/* Node Meta */}
@@ -71,12 +74,14 @@ export default function NodeInspector({ node, onClose }) {
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          className="w-full btn-primary py-2 text-sm text-center"
-        >
-          Close Inspector
-        </button>
+        <InfoTooltip text="Closes this inspector panel. Does not stop or re-run the skill." wrapperClassName="w-full block">
+          <button
+            onClick={onClose}
+            className="w-full btn-primary py-2 text-sm text-center"
+          >
+            Close Inspector
+          </button>
+        </InfoTooltip>
       </div>
     </div>
   );

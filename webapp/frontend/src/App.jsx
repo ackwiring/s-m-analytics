@@ -7,6 +7,7 @@ import MTypeBaselineView from "./components/MTypeBaselineView";
 import STypeDashboard from "./components/STypeDashboard";
 import ComparisonView from "./components/ComparisonView";
 import ExportView from "./components/ExportView";
+import InfoTooltip from "./components/InfoTooltip";
 import { UploadCloud, CheckCircle } from "lucide-react";
 
 export default function App() {
@@ -138,12 +139,14 @@ export default function App() {
                 <span className="font-bold text-sm">Upload/Processing Notice:</span>
                 <span className="text-xs font-mono">{errorMessage}</span>
               </div>
-              <button
-                onClick={() => setErrorMessage(null)}
-                className="text-xs font-bold text-red-700 hover:text-red-900 ml-4 px-2 py-1 bg-red-100 hover:bg-red-200 rounded border border-red-400"
-              >
-                Dismiss
-              </button>
+              <InfoTooltip text="Dismisses this notice. It does not retry the upload or clear the error condition, it only hides the banner." position="left">
+                <button
+                  onClick={() => setErrorMessage(null)}
+                  className="text-xs font-bold text-red-700 hover:text-red-900 ml-4 px-2 py-1 bg-red-100 hover:bg-red-200 rounded border border-red-400"
+                >
+                  Dismiss
+                </button>
+              </InfoTooltip>
             </div>
           )}
 
@@ -155,24 +158,26 @@ export default function App() {
                 <strong className="text-slate-900">Drag & Drop Active:</strong> Drag new <code className="bg-slate-200 px-1 py-0.5 rounded">.xlsx</code> or <code className="bg-slate-200 px-1 py-0.5 rounded">.csv</code> files anywhere onto the screen to reload data.
               </span>
             </div>
-            <label className="btn-secondary px-3 py-1 cursor-pointer text-xs">
-              Browse Files
-              <input
-                type="file"
-                className="hidden"
-                accept=".xlsx,.xls,.csv,.parquet,.txt"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  if (file.name.toLowerCase().endsWith(".xlsx") || file.name.toLowerCase().endsWith(".xls")) {
-                    handleUpload(file, null);
-                  } else {
-                    handleUpload(null, file);
-                  }
-                  e.target.value = "";
-                }}
-              />
-            </label>
+            <InfoTooltip text="Opens a file picker. Selecting a PhaseCalculator config workbook (.xlsx/.xls) reloads the pipeline settings; selecting a block model (.csv/.parquet/.txt) re-runs ingestion and M-Type baseline on the new dataset." position="left">
+              <label className="btn-secondary px-3 py-1 cursor-pointer text-xs">
+                Browse Files
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".xlsx,.xls,.csv,.parquet,.txt"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.name.toLowerCase().endsWith(".xlsx") || file.name.toLowerCase().endsWith(".xls")) {
+                      handleUpload(file, null);
+                    } else {
+                      handleUpload(null, file);
+                    }
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            </InfoTooltip>
           </div>
 
           {/* Active View Render */}

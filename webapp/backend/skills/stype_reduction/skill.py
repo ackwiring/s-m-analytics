@@ -85,6 +85,7 @@ class STypeReductionSkill(BaseSkill):
             percentiles = params.get("percentiles", [20.0, 40.0, 60.0, 80.0])
             agg_field = params.get("aggregation_field", "d1_Ranking")
             agg_type = params.get("aggregation_type", "GRADE")
+            grade_agg_method = params.get("grade_aggregation_method", "weighted_average")
             flex_rules = params.get("flex_rules", [])
 
             df_model = context.mtype_phase_data.copy()
@@ -119,7 +120,16 @@ class STypeReductionSkill(BaseSkill):
                         df_stype['agg_mass'] = df_stype[tonnes_field]
                         df_stype['agg_weight'] = df_stype[agg_field] * df_stype[tonnes_field]
                         bin_summary = df_stype.groupby('BIN', as_index=False).agg({'agg_weight': 'sum', 'agg_mass': 'sum', 'MASS': 'sum'})
-                        bin_summary['calc_grade'] = bin_summary['agg_weight'] / bin_summary['agg_mass'].replace(0, np.nan)
+                        if grade_agg_method == 'weighted_sum':
+                            # Total contained metal per bin (grade*weight summed, not divided
+                            # by summed weight) - matches legacy phase_file_generator.py.
+                            # A bin needs both grade and tonnage to rank highly; low-tonnage
+                            # bins get suppressed even at high grade.
+                            bin_summary['calc_grade'] = bin_summary['agg_weight']
+                        else:
+                            # Weighted-average grade (metal concentration) per bin - a small
+                            # but high-grade bin can still rank highly regardless of tonnage.
+                            bin_summary['calc_grade'] = bin_summary['agg_weight'] / bin_summary['agg_mass'].replace(0, np.nan)
                         calc_series = bin_summary['calc_grade']
                     else:
                         bin_summary = df_stype.groupby('BIN', as_index=False).agg({'MASS': 'sum'})
@@ -156,7 +166,8 @@ class STypeReductionSkill(BaseSkill):
                     'bins_collapsed_count': len(bins_to_collapse),
                     'bin_distribution': bin_distribution,
                     'grade_preservation': {},
-                    'mass_preservation_pct': 100.0
+                    'mass_preservation_pct': 100.0,
+                    'grade_aggregation_method': grade_agg_method if agg_type == 'GRADE' else None
                 }
                 context.stype_runs[percentile] = {
                     'df_stype': df_stype,

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { BarChart3, TrendingDown, CheckCircle, Percent, ArrowRight } from "lucide-react";
+import InfoTooltip from "./InfoTooltip";
 
 export default function ComparisonView({ appState, onProceedToExport }) {
   const mtype = appState?.mtype_baseline;
@@ -43,70 +44,81 @@ export default function ComparisonView({ appState, onProceedToExport }) {
             Evaluate bin collapsing effectiveness and grade preservation across percentiles.
           </p>
         </div>
-        <button
-          onClick={onProceedToExport}
-          className="btn-primary px-5 py-2.5 flex items-center gap-2 text-sm"
-        >
-          <span>Export Phase Files</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <InfoTooltip text="Moves to Stage 4 to download a ZIP of the M-Type and S-Type phase files and audit reports for the currently calculated percentile runs." position="left">
+          <button
+            onClick={onProceedToExport}
+            className="btn-primary px-5 py-2.5 flex items-center gap-2 text-sm"
+          >
+            <span>Export Phase Files</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </InfoTooltip>
       </div>
 
       {/* Percentile Selector Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-300 pb-3">
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-2">Select Percentile:</span>
         {stypeResults.map((res) => (
-          <button
-            key={res.percentile}
-            onClick={() => setSelectedPerc(res.percentile)}
-            className={`px-4 py-1.5 text-xs font-bold rounded-md border transition ${
-              selectedPerc === res.percentile
-                ? "bg-[#ea580c] text-white border-black"
-                : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
-            }`}
-          >
-            {res.percentile}% S-Type
-          </button>
+          <InfoTooltip key={res.percentile} text={`Show the bin collapse and grade preservation results for the ${res.percentile}% S-Type cut - bins at or below this percentile were flagged and merged.`}>
+            <button
+              onClick={() => setSelectedPerc(res.percentile)}
+              className={`px-4 py-1.5 text-xs font-bold rounded-md border transition ${
+                selectedPerc === res.percentile
+                  ? "bg-[#ea580c] text-white border-black"
+                  : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
+              }`}
+            >
+              {res.percentile}% S-Type
+            </button>
+          </InfoTooltip>
         ))}
       </div>
 
       {/* Metrics Banner */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="app-card p-4">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            Original Bins
+        <InfoTooltip text="Number of discrete N-dimensional bins in the unreduced M-Type baseline, before this percentile's S-Type collapse was applied." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              Original Bins
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {activeStype.original_bins_count} <span className="text-xs font-normal text-slate-500">Bins</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
-            {activeStype.original_bins_count} <span className="text-xs font-normal text-slate-500">Bins</span>
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            Reduced Bins ({activeStype.percentile}%)
+        <InfoTooltip text={`Number of bins remaining after collapsing bins at or below the ${activeStype.percentile}% threshold into their flex-rule neighbors.`} wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              Reduced Bins ({activeStype.percentile}%)
+            </div>
+            <div className="text-2xl font-bold text-[#ea580c]">
+              {activeStype.reduced_bins_count} <span className="text-xs font-normal text-slate-500">Remaining</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-[#ea580c]">
-            {activeStype.reduced_bins_count} <span className="text-xs font-normal text-slate-500">Remaining</span>
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <TrendingDown className="w-4 h-4 text-emerald-600" /> Bin Reduction
+        <InfoTooltip text="Percentage decrease in bin count from Original Bins to Reduced Bins - higher means more aggressive collapsing at this percentile cut." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <TrendingDown className="w-4 h-4 text-emerald-600" /> Bin Reduction
+            </div>
+            <div className="text-2xl font-bold text-emerald-600">
+              {activeStype.reduction_pct}% <span className="text-xs font-normal text-slate-500">Reduction</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-emerald-600">
-            {activeStype.reduction_pct}% <span className="text-xs font-normal text-slate-500">Reduction</span>
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <CheckCircle className="w-4 h-4 text-[#0d9488]" /> Mass Preservation
+        <InfoTooltip text="Share of total reserve mass still accounted for after collapsing bins. S-Type collapsing merges bins rather than discarding material, so this should always read 100%." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <CheckCircle className="w-4 h-4 text-[#0d9488]" /> Mass Preservation
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              100.0% <span className="text-xs font-normal text-slate-500">Preserved</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
-            100.0% <span className="text-xs font-normal text-slate-500">Preserved</span>
-          </div>
-        </div>
+        </InfoTooltip>
       </div>
 
       {/* Side by Side Chart & Grade Deltas */}
@@ -139,7 +151,9 @@ export default function ComparisonView({ appState, onProceedToExport }) {
         {/* Grade Preservation Deltas */}
         <div className="app-card p-6 space-y-4">
           <div>
-            <h3 className="font-bold text-base text-slate-900 mb-1">Grade Variance Check</h3>
+            <InfoTooltip text="Percentage change in each field's weighted-average grade after S-Type collapsing, versus its value in the unreduced M-Type baseline. Green means the shift is under 0.5% (negligible); amber flags a larger drift worth reviewing before export.">
+              <h3 className="font-bold text-base text-slate-900 mb-1 cursor-help w-fit">Grade Variance Check</h3>
+            </InfoTooltip>
             <p className="subtitle-teal text-xs">Variance (% Delta) from Baseline M-Type</p>
           </div>
 

@@ -74,6 +74,7 @@ def get_current_state():
         percentiles=[20.0, 40.0, 60.0, 80.0],
         aggregation_field=ctx.raw_config.get('stype_agg_field', (dims[0] if dims else 'd1_Ranking')),
         aggregation_type=ctx.raw_config.get('stype_agg_type', 'GRADE'),
+        grade_aggregation_method=ctx.raw_config.get('stype_grade_agg_method', 'weighted_average'),
         flex_rules=flex_rules
     )
 
@@ -148,6 +149,7 @@ def run_stype(params: STypeParameters):
         "percentiles": params.percentiles,
         "aggregation_field": params.aggregation_field,
         "aggregation_type": params.aggregation_type,
+        "grade_aggregation_method": params.grade_aggregation_method,
         "flex_rules": [r.dict() for r in params.flex_rules]
     })
     ORCHESTRATOR.run_node("audit_verification")

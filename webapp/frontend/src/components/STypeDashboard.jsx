@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Sliders, CheckCircle2, Play, RefreshCw, Layers, ArrowDownUp } from "lucide-react";
+import InfoTooltip from "./InfoTooltip";
 
 export default function STypeDashboard({ appState, onRunStype, isCalculating }) {
   const currentParams = appState?.current_stype_params || {
@@ -7,11 +8,13 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
     percentiles: [20.0, 40.0, 60.0, 80.0],
     aggregation_field: "d1_Ranking",
     aggregation_type: "GRADE",
+    grade_aggregation_method: "weighted_average",
     flex_rules: []
   };
 
   const [aggField, setAggField] = useState(currentParams.aggregation_field);
   const [aggType, setAggType] = useState(currentParams.aggregation_type);
+  const [gradeAggMethod, setGradeAggMethod] = useState(currentParams.grade_aggregation_method || "weighted_average");
   const [numSets, setNumSets] = useState(currentParams.sets || 5);
   const [customPercentiles, setCustomPercentiles] = useState(currentParams.percentiles.join(", "));
   const [flexRules, setFlexRules] = useState(currentParams.flex_rules || []);
@@ -51,6 +54,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
       percentiles: parsedPercentiles.length ? parsedPercentiles : [20.0, 40.0, 60.0, 80.0],
       aggregation_field: aggField,
       aggregation_type: aggType,
+      grade_aggregation_method: gradeAggMethod,
       flex_rules: flexRules
     });
   };
@@ -64,23 +68,25 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
             Adjust percentile intervals, ranking drivers, and dimension flex rules to optimize bin reduction.
           </p>
         </div>
-        <button
-          type="submit"
-          disabled={isCalculating}
-          className="btn-primary px-6 py-2.5 flex items-center gap-2 text-sm"
-        >
-          {isCalculating ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Calculating Reduction...</span>
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4 fill-current" />
-              <span>Execute S-Type Reduction</span>
-            </>
-          )}
-        </button>
+        <InfoTooltip text="Runs the N-dimensional S-Type bin collapse for every percentile cut below, using the current aggregation driver and flex rules. Only re-executes the downstream S-Type, audit, and export nodes - the M-Type baseline is not recalculated." position="left">
+          <button
+            type="submit"
+            disabled={isCalculating}
+            className="btn-primary px-6 py-2.5 flex items-center gap-2 text-sm"
+          >
+            {isCalculating ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>Calculating Reduction...</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-4 h-4 fill-current" />
+                <span>Execute S-Type Reduction</span>
+              </>
+            )}
+          </button>
+        </InfoTooltip>
       </div>
 
       <div className="grid grid-cols-3 gap-6">
@@ -91,9 +97,11 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
           </h3>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              STYPE Aggregation Field
-            </label>
+            <InfoTooltip text="The dimension/field whose per-bin value is used to decide which bins are 'low value' and eligible for collapsing during S-Type reduction.">
+              <label className="block text-xs font-semibold text-slate-700 mb-1 cursor-help w-fit">
+                STYPE Aggregation Field
+              </label>
+            </InfoTooltip>
             <select
               value={aggField}
               onChange={(e) => setAggField(e.target.value)}
@@ -106,34 +114,78 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              STYPE Aggregation Type
-            </label>
+            <InfoTooltip text="Chooses whether bins are ranked by the aggregation field's grade (see Grade Ranking Basis below) or by summed mass/tonnage.">
+              <label className="block text-xs font-semibold text-slate-700 mb-1 cursor-help w-fit">
+                STYPE Aggregation Type
+              </label>
+            </InfoTooltip>
             <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setAggType("GRADE")}
-                className={`py-2 text-xs font-bold rounded border transition ${
-                  aggType === "GRADE"
-                    ? "bg-[#0a192f] text-white border-black"
-                    : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
-                }`}
-              >
-                GRADE (Weighted)
-              </button>
-              <button
-                type="button"
-                onClick={() => setAggType("QUANTITY")}
-                className={`py-2 text-xs font-bold rounded border transition ${
-                  aggType === "QUANTITY"
-                    ? "bg-[#0a192f] text-white border-black"
-                    : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
-                }`}
-              >
-                QUANTITY (Summed)
-              </button>
+              <InfoTooltip text="Rank and threshold bins using the selected aggregation field's grade. Choose the exact averaging method below.">
+                <button
+                  type="button"
+                  onClick={() => setAggType("GRADE")}
+                  className={`w-full py-2 text-xs font-bold rounded border transition ${
+                    aggType === "GRADE"
+                      ? "bg-[#0a192f] text-white border-black"
+                      : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
+                  }`}
+                >
+                  GRADE (Weighted)
+                </button>
+              </InfoTooltip>
+              <InfoTooltip text="Rank and threshold bins by their summed mass/tonnage instead of grade - bins with the least material are collapsed first.">
+                <button
+                  type="button"
+                  onClick={() => setAggType("QUANTITY")}
+                  className={`w-full py-2 text-xs font-bold rounded border transition ${
+                    aggType === "QUANTITY"
+                      ? "bg-[#0a192f] text-white border-black"
+                      : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
+                  }`}
+                >
+                  QUANTITY (Summed)
+                </button>
+              </InfoTooltip>
             </div>
           </div>
+
+          {aggType === "GRADE" && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Grade Ranking Basis
+              </label>
+              <div className="grid grid-cols-1 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGradeAggMethod("weighted_average")}
+                  className={`py-2 px-2 text-xs font-bold rounded border transition text-left ${
+                    gradeAggMethod === "weighted_average"
+                      ? "bg-[#0d9488] text-white border-black"
+                      : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
+                  }`}
+                >
+                  Weighted Average (grade concentration)
+                  <div className="font-normal text-[10px] opacity-80 mt-0.5">
+                    Ranks bins by grade regardless of tonnage. A small, high-grade bin can outrank a large, lower-grade one.
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGradeAggMethod("weighted_sum")}
+                  className={`py-2 px-2 text-xs font-bold rounded border transition text-left ${
+                    gradeAggMethod === "weighted_sum"
+                      ? "bg-[#0d9488] text-white border-black"
+                      : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
+                  }`}
+                >
+                  Weighted Sum (total contained metal)
+                  <div className="font-normal text-[10px] opacity-80 mt-0.5">
+                    Ranks bins by total metal content (grade x tonnes). Matches legacy phase_file_generator.py behavior; a bin needs both grade and tonnage to rank highly.
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Middle Col: Percentiles Control */}
@@ -144,23 +196,29 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="text-xs font-semibold text-slate-700">Preset S-Type Sets ({numSets})</label>
+              <InfoTooltip text="Auto-generates evenly-spaced percentile cuts below (e.g. 5 sets = 20/40/60/80%). Overwrites whatever is currently in the Active Percentile Cuts field.">
+                <label className="text-xs font-semibold text-slate-700 cursor-help">Preset S-Type Sets ({numSets})</label>
+              </InfoTooltip>
               <span className="text-xs text-[#0d9488] font-bold">100 / {numSets} = {100 / numSets}% steps</span>
             </div>
-            <input
-              type="range"
-              min="2"
-              max="10"
-              value={numSets}
-              onChange={(e) => handleSetsChange(e.target.value)}
-              className="w-full accent-[#ea580c]"
-            />
+            <InfoTooltip text="Drag to change how many evenly-spaced percentile sets to generate, from 2 up to 10." wrapperClassName="w-full block">
+              <input
+                type="range"
+                min="2"
+                max="10"
+                value={numSets}
+                onChange={(e) => handleSetsChange(e.target.value)}
+                className="w-full accent-[#ea580c]"
+              />
+            </InfoTooltip>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Active Percentile Cuts (%)
-            </label>
+            <InfoTooltip text="The exact percentile thresholds S-Type reduction will run at. Each value produces its own separate set of collapsed phase files - bins at or below this percentile are flagged for collapse.">
+              <label className="block text-xs font-semibold text-slate-700 mb-1 cursor-help w-fit">
+                Active Percentile Cuts (%)
+              </label>
+            </InfoTooltip>
             <input
               type="text"
               value={customPercentiles}
@@ -204,10 +262,26 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
           <table className="w-full text-left text-sm">
             <thead className="bg-[#0a192f] text-white text-xs uppercase tracking-wider">
               <tr>
-                <th className="px-4 py-3 rounded-tl">Dimension Field</th>
-                <th className="px-4 py-3">Flex Order Priority</th>
-                <th className="px-4 py-3">Flex Direction Rule</th>
-                <th className="px-4 py-3 rounded-tr">Status</th>
+                <th className="px-4 py-3 rounded-tl">
+                  <InfoTooltip text="A Cut-Off Grade dimension configured in the COG_Bins sheet (e.g. grade, deleterious element, rock type)." position="bottom">
+                    <span className="cursor-help">Dimension Field</span>
+                  </InfoTooltip>
+                </th>
+                <th className="px-4 py-3">
+                  <InfoTooltip text="Sets the order dimensions are tried when searching for a bin to merge a collapsed bin into. Lower numbers are tried first; 0 means this dimension is ignored during the search." position="bottom">
+                    <span className="cursor-help">Flex Order Priority</span>
+                  </InfoTooltip>
+                </th>
+                <th className="px-4 py-3">
+                  <InfoTooltip text="FLEX UP merges a collapsed bin into the next higher interval on this dimension, FLEX DOWN into the next lower interval, and STATIC never collapses this dimension's boundary." position="bottom">
+                    <span className="cursor-help">Flex Direction Rule</span>
+                  </InfoTooltip>
+                </th>
+                <th className="px-4 py-3 rounded-tr">
+                  <InfoTooltip text="Whether this dimension currently takes part in the bin-collapse search (Priority greater than 0) or is bypassed entirely (Priority = 0)." position="bottom">
+                    <span className="cursor-help">Status</span>
+                  </InfoTooltip>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-300 bg-white">

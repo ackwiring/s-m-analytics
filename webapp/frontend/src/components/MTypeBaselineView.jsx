@@ -1,6 +1,7 @@
 import React from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { Layers, Database, Sparkles, Scale, Grid, ArrowRight, UploadCloud } from "lucide-react";
+import InfoTooltip from "./InfoTooltip";
 
 
 export default function MTypeBaselineView({ appState, onProceedToStype, onUploadBlockModel }) {
@@ -29,19 +30,21 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
           </div>
 
           <div className="flex items-center justify-center gap-4 pt-2">
-            <label className="btn-primary px-6 py-2.5 cursor-pointer text-sm flex items-center gap-2">
-              <UploadCloud className="w-4 h-4" />
-              <span>Select Block Model (.csv)</span>
-              <input
-                type="file"
-                className="hidden"
-                accept=".csv,.parquet,.txt"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file && onUploadBlockModel) onUploadBlockModel(file);
-                }}
-              />
-            </label>
+            <InfoTooltip text="Opens a file picker to select your genuine reserve block model. Triggers ingestion and 1D M-Type baseline binning using the already-loaded config workbook.">
+              <label className="btn-primary px-6 py-2.5 cursor-pointer text-sm flex items-center gap-2">
+                <UploadCloud className="w-4 h-4" />
+                <span>Select Block Model (.csv)</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".csv,.parquet,.txt"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file && onUploadBlockModel) onUploadBlockModel(file);
+                  }}
+                />
+              </label>
+            </InfoTooltip>
           </div>
         </div>
 
@@ -91,52 +94,62 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
             Unreduced 1-Dimensional Cut-Off Grade (COG) baseline calculated directly from the block model.
           </p>
         </div>
-        <button
-          onClick={onProceedToStype}
-          className="btn-primary px-5 py-2.5 flex items-center gap-2 text-sm"
-        >
-          <span>Tune S-Type Parameters</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <InfoTooltip text="Moves to Stage 2, where you set percentile cuts, choose the grade/quantity ranking driver, and configure flex rules for N-dimensional S-Type bin collapsing." position="left">
+          <button
+            onClick={onProceedToStype}
+            className="btn-primary px-5 py-2.5 flex items-center gap-2 text-sm"
+          >
+            <span>Tune S-Type Parameters</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </InfoTooltip>
       </div>
 
       {/* Summary Metric Cards */}
       <div className="grid grid-cols-4 gap-4">
-        <div className="app-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            <Scale className="w-4 h-4 text-[#ea580c]" /> Total Reserve Mass
+        <InfoTooltip text="Sum of the mass/tonnage field across every block in the uploaded model - the total reserve before any binning or reduction." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              <Scale className="w-4 h-4 text-[#ea580c]" /> Total Reserve Mass
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {mtype.total_mass.toLocaleString()} <span className="text-xs font-normal text-slate-600">Tonnes</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
-            {mtype.total_mass.toLocaleString()} <span className="text-xs font-normal text-slate-600">Tonnes</span>
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            <Grid className="w-4 h-4 text-[#0d9488]" /> Total Active Bins
+        <InfoTooltip text="Count of distinct multi-dimensional Cut-Off Grade bins produced by the unreduced M-Type baseline, before S-Type collapsing removes any of them." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              <Grid className="w-4 h-4 text-[#0d9488]" /> Total Active Bins
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {mtype.total_bins} <span className="text-xs font-normal text-slate-600">Discrete Bins</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
-            {mtype.total_bins} <span className="text-xs font-normal text-slate-600">Discrete Bins</span>
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            <Layers className="w-4 h-4 text-[#ea580c]" /> Active Phases
+        <InfoTooltip text="The distinct mine phases/pits present in the uploaded block model that phase files will be generated for." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              <Layers className="w-4 h-4 text-[#ea580c]" /> Active Phases
+            </div>
+            <div className="text-xl font-bold text-slate-900 truncate">
+              {mtype.phases.join(", ") || "None"}
+            </div>
           </div>
-          <div className="text-xl font-bold text-slate-900 truncate">
-            {mtype.phases.join(", ") || "None"}
-          </div>
-        </div>
+        </InfoTooltip>
 
-        <div className="app-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4 text-[#0d9488]" /> Dimension Fields
+        <InfoTooltip text="Number of Cut-Off Grade dimensions configured in the COG_Bins sheet (e.g. grade, deleterious elements) that the block model is binned across." wrapperClassName="w-full block">
+          <div className="app-card p-4">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              <Sparkles className="w-4 h-4 text-[#0d9488]" /> Dimension Fields
+            </div>
+            <div className="text-2xl font-bold text-slate-900">
+              {mtype.dimension_count} <span className="text-xs font-normal text-slate-600">COG Dimensions</span>
+            </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
-            {mtype.dimension_count} <span className="text-xs font-normal text-slate-600">COG Dimensions</span>
-          </div>
-        </div>
+        </InfoTooltip>
       </div>
 
       {/* Main Content Grid: Chart & Weighted Grades */}
@@ -172,7 +185,9 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
         {/* Weighted Grades Table */}
         <div className="app-card p-6 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-base text-slate-900 mb-1">Weighted Head Grades</h3>
+            <InfoTooltip text="Each field's grade averaged across the whole reserve, weighted by its designated tonnage/mass field (from the WeightedFields config sheet) rather than a simple unweighted mean.">
+              <h3 className="font-bold text-base text-slate-900 mb-1 cursor-help">Weighted Head Grades</h3>
+            </InfoTooltip>
             <p className="text-xs subtitle-teal mb-4">Calculated against designated mass weightings</p>
 
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
