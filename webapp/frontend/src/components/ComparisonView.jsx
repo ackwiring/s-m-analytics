@@ -61,7 +61,7 @@ export default function ComparisonView({ appState, onProceedToExport }) {
             onClick={() => setSelectedPerc(res.percentile)}
             className={`px-4 py-1.5 text-xs font-bold rounded-md border transition ${
               selectedPerc === res.percentile
-                ? "bg-[#ea580c] text-white border-black shadow"
+                ? "bg-[#ea580c] text-white border-black"
                 : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
             }`}
           >

@@ -23,8 +23,24 @@ class MTypeBaselineSkill(BaseSkill):
             if df_sub.empty:
                 continue
             df_sub.sort_values(by=['INTERVAL'], inplace=True)
-            cutoffs = df_sub['COG CUTOFF'].values
-            
+            # COG_CUTOFF (note: underscore, not a space - the previous
+            # 'COG CUTOFF' never matched the real column at all, KeyError on
+            # any real config) uses the literal string 'MIN' as a sentinel
+            # meaning "the lowest bin has no fixed lower edge - use the
+            # data's actual minimum". Resolve it to a real number before
+            # using these values as pd.cut() bin edges: left as the string
+            # 'MIN', pd.cut can't sort it against numeric edges
+            # (TypeError: '<' not supported between 'int' and 'str'), so
+            # even after fixing the column name this never ran successfully
+            # against the real COG_Bins schema (verified live, 2026-09-01 -
+            # every dimension in the production config uses this sentinel).
+            # COG_TOP's equivalent 'MAX' sentinel doesn't need the same
+            # treatment - top_bound below already always uses the data's
+            # actual max as the final bin edge regardless of what COG_TOP's
+            # last row says.
+            data_min = df1[name].min() if len(df1) > 0 else 0.0
+            cutoffs = df_sub['COG_CUTOFF'].replace('MIN', data_min).astype(float).values
+
             top_bound = df1[name].max() + 0.01 if len(df1) > 0 else 100.0
             bins = np.append(cutoffs, [top_bound])
             bins = np.unique(bins)

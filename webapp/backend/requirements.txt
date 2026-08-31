@@ -1,0 +1,12 @@
+# Pinned to versions verified working against this codebase (2026-08-28).
+# Previously undocumented anywhere - README just said "pip install" with no
+# versions, which for a numeric pandas/numpy pipeline is a real
+# reproducibility risk (dtype-inference and .replace() behavior differences
+# across major versions directly affect this pipeline's output).
+fastapi==0.136.3
+uvicorn==0.48.0
+pandas==3.0.3
+numpy==2.4.6
+openpyxl==3.1.5
+pydantic==2.13.4
+python-multipart==0.0.29

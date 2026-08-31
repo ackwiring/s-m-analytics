@@ -133,7 +133,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Error Alert Banner */}
           {errorMessage && (
-            <div className="bg-red-50 border-2 border-red-600 text-red-900 px-4 py-3 rounded-md shadow flex items-center justify-between">
+            <div className="bg-red-50 border-2 border-red-600 text-red-900 px-4 py-3 rounded-md flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm">Upload/Processing Notice:</span>
                 <span className="text-xs font-mono">{errorMessage}</span>

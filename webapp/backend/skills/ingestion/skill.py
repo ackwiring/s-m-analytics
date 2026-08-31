@@ -73,7 +73,19 @@ class IngestionSkill(BaseSkill):
                 if isinstance(dataset_source, pd.DataFrame):
                     df_model = dataset_source.copy()
                 elif isinstance(dataset_source, bytes):
-                    for enc in ['utf-8', 'latin-1', 'cp1252', 'utf-8-sig', 'iso-8859-1']:
+                    # Order matters: latin-1/iso-8859-1 map every possible byte
+                    # value to a character, so they never raise a decode error -
+                    # tried early, they silently "succeed" on genuinely
+                    # non-Latin-1 data (e.g. Windows-1252 smart quotes/em-dashes
+                    # from an Excel export) instead of falling through to the
+                    # encoding that would have decoded it correctly. utf-8-sig
+                    # goes first since it's a strict superset of plain utf-8
+                    # decoding (identical result when there's no BOM, correctly
+                    # strips one when present); cp1252 comes before the
+                    # always-succeeds latin-1/iso-8859-1 fallbacks since it's
+                    # the far more common real-world source of non-UTF-8 bytes
+                    # in these exports and would otherwise never get a chance.
+                    for enc in ['utf-8-sig', 'cp1252', 'latin-1', 'iso-8859-1']:
                         try:
                             df_model = pd.read_csv(io.BytesIO(dataset_source), encoding=enc)
                             logs.append(f"Successfully decoded CSV with encoding: {enc}")
@@ -99,8 +111,17 @@ class IngestionSkill(BaseSkill):
                     raise ValueError("Could not parse dataset with any supported encoding (UTF-8, Latin-1, Parquet, Excel).")
 
                 df_model.columns = [str(c).strip().replace(' ', '_') for c in df_model.columns]
-                df_model.replace(-99, np.nan, inplace=True)
-                df_model.replace('-99', np.nan, inplace=True)
+                # -99 is this dataset family's null sentinel, but only within
+                # numeric fields - scoping to numeric dtypes stops it from
+                # nulling a legitimate text/ID field that happens to contain
+                # the string "-99". This is still a blanket sentinel across
+                # every numeric column (no per-field allowlist exists in the
+                # config schema to say which fields actually use -99 as null
+                # vs. a real value), so a numeric field that legitimately uses
+                # -99 would still be affected - that needs a field-level list
+                # from whoever owns the COG_Bins config schema.
+                numeric_cols = df_model.select_dtypes(include=[np.number]).columns
+                df_model[numeric_cols] = df_model[numeric_cols].replace(-99, np.nan)
 
                 context.block_model_df = df_model
                 context.dataset_name = dataset_name

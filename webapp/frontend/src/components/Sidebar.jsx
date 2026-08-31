@@ -39,7 +39,7 @@ export default function Sidebar({ activeTab, setActiveTab, appState, onClearData
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-start gap-3 p-3 rounded-md border text-left transition-all ${
                   isActive
-                    ? "bg-[#1e293b] border-[#ea580c] text-white shadow-md"
+                    ? "bg-[#1e293b] border-[#ea580c] text-white"
                     : "bg-transparent border-transparent text-slate-400 hover:bg-slate-800/60 hover:text-slate-200"
                 }`}
               >

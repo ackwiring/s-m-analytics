@@ -423,8 +423,10 @@ def mtype_calc_phase_files(df_model, cog_bins, weighted_fields, sum_fields, fiel
     weighted_fields = weighted_fields.replace([primary_bin_dimension],'dQS')
     weighted_fields.loc[weighted_fields['Field']=='dQS', 'Weighting'] = 'dQS_Weighting'
     field_order = field_order.replace([primary_bin_dimension], 'dQS')
-    sum_fields = sum_fields.append(pd.DataFrame({'Field': ['dQS_Weighting']}))
-    field_order = field_order.append(pd.DataFrame({'Field': ['dQS_Weighting'], 'Alias':['dQS_Weighting'], 'NullValue': [0]}))
+    # DataFrame.append() was removed in pandas 2.0 - pd.concat() is the
+    # documented direct replacement (same default index behavior).
+    sum_fields = pd.concat([sum_fields, pd.DataFrame({'Field': ['dQS_Weighting']})])
+    field_order = pd.concat([field_order, pd.DataFrame({'Field': ['dQS_Weighting'], 'Alias':['dQS_Weighting'], 'NullValue': [0]})])
 
     # M-Type Dimension Reduction Phase Files
     starttime = datetime.now()
@@ -539,7 +541,7 @@ def collapse_stype_cog_bins(stype_full_cog_bins, cog_bins):
     for i in range(0, len(fieldname_cols)):
         fcol = fieldname_cols[i]
         icol = interval_cols[i]
-        new_cog_bins = new_cog_bins.append(cog_bins.loc[stype_full_cog_bins.groupby([fcol, icol]).min().index.values])
+        new_cog_bins = pd.concat([new_cog_bins, cog_bins.loc[stype_full_cog_bins.groupby([fcol, icol]).min().index.values]])
     cog_bins.reset_index(inplace=True)
     new_cog_bins.reset_index(inplace=True)
 
@@ -604,7 +606,14 @@ def stype_bin_search(full_cog_bins, bins_to_collapse, stype_flexorder): # AA DEB
         sortfields = [f.replace('FIELDNAME', 'INTERVAL') for f in dimfieldnames if current_bin[f] != 'STATIC']
         sortorders = [True if current_bin[f.replace('INTERVAL', 'STYPE OPTION')] == 'FLEX UP' else False for f in sortfields]
 
-        remaining_cog_bins = full_cog_bins.query(f'BIN_ID not in {list(bins_to_collapse)}')
+        # list(bins_to_collapse) previously interpolated numpy scalars
+        # straight into the query string via f-string - numpy 2.0 changed
+        # np.float64's repr() to "np.float64(5.0)" instead of "5.0", which
+        # pandas.query()'s expression parser can't evaluate ('np' isn't in
+        # scope there). Cast to native Python floats first so the
+        # interpolated literal is version-independent.
+        collapse_literals = [float(b) for b in bins_to_collapse]
+        remaining_cog_bins = full_cog_bins.query(f'BIN_ID not in {collapse_literals}')
         remaining_cog_bins.sort_values(by=sortfields, ascending=sortorders, inplace=True)
 
         filter_strings = []
@@ -653,7 +662,7 @@ def calc_bin_table(cog_bins):
             new_cols = set(bin_table_temp) - set(bin_table.columns)
             for col in new_cols:
                 bin_table[col] = np.nan
-            bin_table = bin_table.append(bin_table_temp)
+            bin_table = pd.concat([bin_table, bin_table_temp])
 
     # bin_table now contains all the valid bins along with some invalid partial
     # sections with 'd2_FIELDNAME'==nan, 'd3_FIELDNAME'==nan etc

@@ -18,7 +18,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
 
         {/* Empty State / Ingestion Prompt */}
         <div className="app-card p-12 text-center space-y-5 bg-slate-50">
-          <div className="w-16 h-16 bg-white border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#ea580c] shadow">
+          <div className="w-16 h-16 bg-white border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#ea580c]">
             <Database className="w-8 h-8" />
           </div>
           <div className="max-w-md mx-auto space-y-2">

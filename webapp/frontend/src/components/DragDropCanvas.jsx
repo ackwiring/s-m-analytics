@@ -76,7 +76,7 @@ export default function DragDropCanvas({ onUpload, isUploading, children }) {
 
       {/* Uploading Status Indicator */}
       {isUploading && (
-        <div className="fixed bottom-6 right-6 z-40 bg-[#0a192f] border-2 border-black rounded-md px-6 py-3 text-white shadow-xl flex items-center gap-3">
+        <div className="fixed bottom-6 right-6 z-40 bg-[#0a192f] border-2 border-black rounded-md px-6 py-3 text-white flex items-center gap-3">
           <div className="w-4 h-4 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
           <span className="font-semibold text-sm">Processing uploaded dataset...</span>
         </div>

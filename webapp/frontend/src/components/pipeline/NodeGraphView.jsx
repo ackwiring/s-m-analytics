@@ -36,7 +36,7 @@ export default function NodeGraphView({ appState, onInspectNode }) {
                   onClick={() => onInspectNode(node)}
                   className={`flex-1 min-w-[180px] p-4 rounded-md border-2 cursor-pointer transition-all hover:scale-102 ${
                     isCompleted
-                      ? "bg-slate-800/90 border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+                      ? "bg-slate-800/90 border-emerald-500"
                       : isRunning
                       ? "bg-slate-800 border-[#ea580c] animate-pulse"
                       : isError
