@@ -13,8 +13,13 @@ app = FastAPI(title="M and S Type Reserve Phase Analyzer - Modular Orchestrator"
 
 app.add_middleware(
     CORSMiddleware,
+    # allow_origins="*" + allow_credentials=True is a contradictory pair -
+    # Starlette handles it by reflecting the request's Origin back verbatim,
+    # which defeats the origin restriction entirely for a service exposed
+    # over the Tailscale network. The frontend never sends credentialed
+    # requests (no cookies/auth), so there's nothing to gain from it here.
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -191,10 +196,14 @@ if os.path.exists(FRONTEND_DIST):
 
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
-        file_path = os.path.join(FRONTEND_DIST, full_path)
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            return FileResponse(file_path)
-        return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
+        dist_root = os.path.realpath(FRONTEND_DIST)
+        clean_path = full_path.lstrip("/\\")
+        target_path = os.path.realpath(os.path.join(dist_root, clean_path))
+        if (
+            target_path == dist_root or target_path.startswith(dist_root + os.sep)
+        ) and os.path.isfile(target_path):
+            return FileResponse(target_path)
+        return FileResponse(os.path.join(dist_root, "index.html"))
 
 if __name__ == "__main__":
     import uvicorn
