@@ -26,18 +26,6 @@ app.add_middleware(
 
 ORCHESTRATOR = PipelineOrchestrator()
 
-# Initialize default configuration if available
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFAULT_EXCEL = os.path.join(ROOT_DIR, "PhaseCalculator_V3_MetCoal_2021-06-03.xlsx")
-if not os.path.exists(DEFAULT_EXCEL):
-    DEFAULT_EXCEL = os.path.join(ROOT_DIR, "PhaseCalculator_V1_MetCoal_2021-06-03.xlsx")
-
-if os.path.exists(DEFAULT_EXCEL):
-    ORCHESTRATOR.run_node("ingestion_config", {
-        "config_source": DEFAULT_EXCEL,
-        "config_name": os.path.basename(DEFAULT_EXCEL)
-    })
-
 @app.get("/api/health")
 def health():
     return {"status": "ok", "app": "M & S Type Modular Pipeline Orchestrator"}
@@ -175,6 +163,28 @@ def clear_dataset():
             ctx.node_states[k] = "IDLE"
             ctx.node_timings[k] = 0.0
             ctx.node_logs[k] = []
+    return get_current_state()
+
+@app.post("/api/clear-config")
+def clear_config():
+    # The block model and every derived result are only valid against the
+    # config workbook they were computed with (dimensions, weightings, COG
+    # bins), so clearing the config invalidates the whole downstream state.
+    ctx = ORCHESTRATOR.context
+    ctx.raw_config = {}
+    ctx.config_name = "None"
+    ctx.block_model_df = None
+    ctx.mtype_phase_data = None
+    ctx.mtype_cog_bins = None
+    ctx.mtype_bins_index = None
+    ctx.mtype_summary = {}
+    ctx.stype_runs = {}
+    ctx.export_zip_bytes = None
+    ctx.dataset_name = "No Block Model Loaded"
+    for k in ctx.node_states:
+        ctx.node_states[k] = "IDLE"
+        ctx.node_timings[k] = 0.0
+        ctx.node_logs[k] = []
     return get_current_state()
 
 @app.get("/api/export-zip")

@@ -105,7 +105,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
             <select
               value={aggField}
               onChange={(e) => setAggField(e.target.value)}
-              className="w-full bg-white border border-black rounded px-3 py-2 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-[#ea580c]"
+              className="w-full bg-white border border-black rounded px-3 py-2 text-sm text-slate-900 font-mono focus:ring-2 focus:ring-[#f7901e]"
             >
               {(appState?.available_dimensions || ["d1_Ranking"]).map((dim) => (
                 <option key={dim} value={dim}>{dim}</option>
@@ -160,7 +160,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
                   onClick={() => setGradeAggMethod("weighted_average")}
                   className={`py-2 px-2 text-xs font-bold rounded border transition text-left ${
                     gradeAggMethod === "weighted_average"
-                      ? "bg-[#0d9488] text-white border-black"
+                      ? "bg-[#00a3a6] text-white border-black"
                       : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
                   }`}
                 >
@@ -174,7 +174,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
                   onClick={() => setGradeAggMethod("weighted_sum")}
                   className={`py-2 px-2 text-xs font-bold rounded border transition text-left ${
                     gradeAggMethod === "weighted_sum"
-                      ? "bg-[#0d9488] text-white border-black"
+                      ? "bg-[#00a3a6] text-white border-black"
                       : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
                   }`}
                 >
@@ -199,7 +199,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
               <InfoTooltip text="Auto-generates evenly-spaced percentile cuts below (e.g. 5 sets = 20/40/60/80%). Overwrites whatever is currently in the Active Percentile Cuts field.">
                 <label className="text-xs font-semibold text-slate-700 cursor-help">Preset S-Type Sets ({numSets})</label>
               </InfoTooltip>
-              <span className="text-xs text-[#0d9488] font-bold">100 / {numSets} = {100 / numSets}% steps</span>
+              <span className="text-xs text-[#00a3a6] font-bold">100 / {numSets} = {100 / numSets}% steps</span>
             </div>
             <InfoTooltip text="Drag to change how many evenly-spaced percentile sets to generate, from 2 up to 10." wrapperClassName="w-full block">
               <input
@@ -208,7 +208,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
                 max="10"
                 value={numSets}
                 onChange={(e) => handleSetsChange(e.target.value)}
-                className="w-full accent-[#ea580c]"
+                className="w-full accent-[#f7901e]"
               />
             </InfoTooltip>
           </div>
@@ -224,7 +224,7 @@ export default function STypeDashboard({ appState, onRunStype, isCalculating }) 
               value={customPercentiles}
               onChange={(e) => setCustomPercentiles(e.target.value)}
               placeholder="e.g. 20, 40, 60, 80"
-              className="w-full bg-white border border-black rounded px-3 py-2 text-sm font-mono text-slate-900 focus:ring-2 focus:ring-[#ea580c]"
+              className="w-full bg-white border border-black rounded px-3 py-2 text-sm font-mono text-slate-900 focus:ring-2 focus:ring-[#f7901e]"
             />
             <p className="text-[11px] text-slate-500 mt-1">Comma-separated percentile cuts to generate.</p>
           </div>

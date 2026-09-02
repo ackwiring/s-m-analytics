@@ -119,6 +119,22 @@ export default function App() {
     }
   };
 
+  const handleClearConfig = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/clear-config", { method: "POST" });
+      if (!res.ok) throw new Error("Failed to clear config workbook.");
+      const data = await res.json();
+      setAppState(data);
+      setActiveTab("pipeline");
+    } catch (err) {
+      console.error(err);
+      setErrorMessage(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <DragDropCanvas onUpload={handleUpload} isUploading={isUploading}>
       {/* Dark Navy Sidebar */}
@@ -127,6 +143,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         appState={appState}
         onClearDataset={handleClearDataset}
+        onClearConfig={handleClearConfig}
       />
 
       {/* Main Content Canvas */}
@@ -153,7 +170,7 @@ export default function App() {
           {/* Canvas Drag-and-Drop Prompt Bar */}
           <div className="app-card p-3.5 bg-slate-50 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2 text-slate-700">
-              <UploadCloud className="w-4 h-4 text-[#ea580c]" />
+              <UploadCloud className="w-4 h-4 text-[#f7901e]" />
               <span>
                 <strong className="text-slate-900">Drag & Drop Active:</strong> Drag new <code className="bg-slate-200 px-1 py-0.5 rounded">.xlsx</code> or <code className="bg-slate-200 px-1 py-0.5 rounded">.csv</code> files anywhere onto the screen to reload data.
               </span>
@@ -183,7 +200,7 @@ export default function App() {
           {/* Active View Render */}
           {isLoading ? (
             <div className="app-card p-16 text-center">
-              <div className="w-8 h-8 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-8 h-8 border-4 border-[#f7901e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
               <h3 className="font-bold text-slate-900 text-lg">Initializing Orchestrated Pipeline...</h3>
               <p className="subtitle-teal text-xs mt-1">Registering modular skills and checking configuration</p>
             </div>

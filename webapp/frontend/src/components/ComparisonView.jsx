@@ -64,7 +64,7 @@ export default function ComparisonView({ appState, onProceedToExport }) {
               onClick={() => setSelectedPerc(res.percentile)}
               className={`px-4 py-1.5 text-xs font-bold rounded-md border transition ${
                 selectedPerc === res.percentile
-                  ? "bg-[#ea580c] text-white border-black"
+                  ? "bg-[#f7901e] text-white border-black"
                   : "bg-white text-slate-700 border-slate-400 hover:bg-slate-100"
               }`}
             >
@@ -92,7 +92,7 @@ export default function ComparisonView({ appState, onProceedToExport }) {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
               Reduced Bins ({activeStype.percentile}%)
             </div>
-            <div className="text-2xl font-bold text-[#ea580c]">
+            <div className="text-2xl font-bold text-[#f7901e]">
               {activeStype.reduced_bins_count} <span className="text-xs font-normal text-slate-500">Remaining</span>
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function ComparisonView({ appState, onProceedToExport }) {
         <InfoTooltip text="Share of total reserve mass still accounted for after collapsing bins. S-Type collapsing merges bins rather than discarding material, so this should always read 100%." wrapperClassName="w-full block">
           <div className="app-card p-4">
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-[#0d9488]" /> Mass Preservation
+              <CheckCircle className="w-4 h-4 text-[#00a3a6]" /> Mass Preservation
             </div>
             <div className="text-2xl font-bold text-slate-900">
               100.0% <span className="text-xs font-normal text-slate-500">Preserved</span>
@@ -142,7 +142,7 @@ export default function ComparisonView({ appState, onProceedToExport }) {
                 />
                 <Legend />
                 <Bar dataKey="Original" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Reduced" fill="#ea580c" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Reduced" fill="#f7901e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

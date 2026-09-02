@@ -19,7 +19,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
 
         {/* Empty State / Ingestion Prompt */}
         <div className="app-card p-12 text-center space-y-5 bg-slate-50">
-          <div className="w-16 h-16 bg-white border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#ea580c]">
+          <div className="w-16 h-16 bg-white border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#f7901e]">
             <Database className="w-8 h-8" />
           </div>
           <div className="max-w-md mx-auto space-y-2">
@@ -110,7 +110,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
         <InfoTooltip text="Sum of the mass/tonnage field across every block in the uploaded model - the total reserve before any binning or reduction." wrapperClassName="w-full block">
           <div className="app-card p-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              <Scale className="w-4 h-4 text-[#ea580c]" /> Total Reserve Mass
+              <Scale className="w-4 h-4 text-[#f7901e]" /> Total Reserve Mass
             </div>
             <div className="text-2xl font-bold text-slate-900">
               {mtype.total_mass.toLocaleString()} <span className="text-xs font-normal text-slate-600">Tonnes</span>
@@ -121,7 +121,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
         <InfoTooltip text="Count of distinct multi-dimensional Cut-Off Grade bins produced by the unreduced M-Type baseline, before S-Type collapsing removes any of them." wrapperClassName="w-full block">
           <div className="app-card p-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              <Grid className="w-4 h-4 text-[#0d9488]" /> Total Active Bins
+              <Grid className="w-4 h-4 text-[#00a3a6]" /> Total Active Bins
             </div>
             <div className="text-2xl font-bold text-slate-900">
               {mtype.total_bins} <span className="text-xs font-normal text-slate-600">Discrete Bins</span>
@@ -132,7 +132,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
         <InfoTooltip text="The distinct mine phases/pits present in the uploaded block model that phase files will be generated for." wrapperClassName="w-full block">
           <div className="app-card p-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              <Layers className="w-4 h-4 text-[#ea580c]" /> Active Phases
+              <Layers className="w-4 h-4 text-[#f7901e]" /> Active Phases
             </div>
             <div className="text-xl font-bold text-slate-900 truncate">
               {mtype.phases.join(", ") || "None"}
@@ -143,7 +143,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
         <InfoTooltip text="Number of Cut-Off Grade dimensions configured in the COG_Bins sheet (e.g. grade, deleterious elements) that the block model is binned across." wrapperClassName="w-full block">
           <div className="app-card p-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-              <Sparkles className="w-4 h-4 text-[#0d9488]" /> Dimension Fields
+              <Sparkles className="w-4 h-4 text-[#00a3a6]" /> Dimension Fields
             </div>
             <div className="text-2xl font-bold text-slate-900">
               {mtype.dimension_count} <span className="text-xs font-normal text-slate-600">COG Dimensions</span>
@@ -176,7 +176,7 @@ export default function MTypeBaselineView({ appState, onProceedToStype, onUpload
                   formatter={(val) => [`${val.toLocaleString()} Tonnes`, "Mass"]}
                   contentStyle={{ backgroundColor: "#0f172a", border: "1.5px solid black", borderRadius: "6px", color: "#fff" }}
                 />
-                <Bar dataKey="mass" fill="#ea580c" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="mass" fill="#f7901e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

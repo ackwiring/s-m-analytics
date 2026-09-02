@@ -17,7 +17,7 @@ export default function ExportView({ appState }) {
       </div>
 
       <div className="app-card p-8 text-center space-y-6">
-        <div className="w-16 h-16 bg-slate-200 border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#ea580c]">
+        <div className="w-16 h-16 bg-slate-200 border-2 border-black rounded-full flex items-center justify-center mx-auto text-[#f7901e]">
           <FileArchive className="w-8 h-8" />
         </div>
 

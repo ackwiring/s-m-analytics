@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -5,17 +6,21 @@
   --bg-card: #f8fafc;
   --bg-sidebar: #0a192f;
   --border-black: #0f172a;
-  --title-orange: #ea580c;
-  --subtitle-teal: #0d9488;
+  --title-orange: #f7901e;
+  --title-orange-dark: #e07f15;
+  --subtitle-teal: #00a3a6;
+  --subtitle-teal-dark: #0d7e80;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: #ffffff;
-  color: #1e293b;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+  font-family: var(--font-family);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
@@ -27,32 +32,33 @@ body {
 .app-card {
   background-color: #f8fafc;
   border: 1.5px solid #0f172a;
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .app-card-sm {
   background-color: #f1f5f9;
-  border: 1px solid #1e293b;
-  border-radius: 4px;
+  border: 1px solid #0f172a;
+  border-radius: 6px;
 }
 
 .title-orange {
-  color: #ea580c;
+  color: #f7901e;
   font-weight: 700;
 }
 
 .subtitle-teal {
-  color: #0d9488;
+  color: #00a3a6;
   font-weight: 600;
 }
 
 .border-sharp {
   border: 1.5px solid #0f172a;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .btn-primary {
-  background-color: #ea580c;
+  background-color: #f7901e;
   color: #ffffff;
   border: 1.5px solid #0f172a;
   border-radius: 6px;
@@ -62,7 +68,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #c2410c;
+  background-color: #e07f15;
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0px 0px rgba(15, 23, 42, 1);
 }
@@ -84,5 +90,34 @@ body {
 
 .btn-secondary:hover {
   background-color: #f1f5f9;
+  border-color: #f7901e;
+}
+
+/* QS Brand Elements */
+.qs-logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.q-navicon-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid #0f172a;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 2px 2px 0px #0f172a;
+  flex-shrink: 0;
+}
+
+.q-navicon-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 

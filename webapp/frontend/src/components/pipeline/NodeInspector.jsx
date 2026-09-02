@@ -12,7 +12,7 @@ export default function NodeInspector({ node, onClose }) {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d9488]">{node.category} Skill</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#00a3a6]">{node.category} Skill</span>
               <h3 className="text-lg font-bold text-white">{node.display_name}</h3>
             </div>
             <InfoTooltip text="Closes this inspector panel. Does not stop or re-run the skill." position="left">
@@ -59,7 +59,7 @@ export default function NodeInspector({ node, onClose }) {
             {/* Console Logs */}
             <div>
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5 text-[#ea580c]" /> Execution Logs
+                <Terminal className="w-3.5 h-3.5 text-[#f7901e]" /> Execution Logs
               </h4>
               <div className="bg-black/90 p-3 rounded border border-slate-800 font-mono text-[11px] text-emerald-400 max-h-56 overflow-y-auto space-y-1">
                 {node.logs && node.logs.length > 0 ? (

@@ -16,7 +16,7 @@ export default function NodeGraphView({ appState, onInspectNode }) {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs bg-[#0a192f] text-slate-200 border border-black px-3 py-1.5 rounded-md flex items-center gap-1.5 font-mono">
-            <Cpu className="w-3.5 h-3.5 text-[#ea580c]" />
+            <Cpu className="w-3.5 h-3.5 text-[#f7901e]" />
             Orchestrator v2.0 Active
           </span>
         </div>
@@ -40,14 +40,14 @@ export default function NodeGraphView({ appState, onInspectNode }) {
                       isCompleted
                         ? "bg-slate-800/90 border-emerald-500"
                         : isRunning
-                        ? "bg-slate-800 border-[#ea580c] animate-pulse"
+                        ? "bg-slate-800 border-[#f7901e] animate-pulse"
                         : isError
                         ? "bg-red-950/80 border-red-500"
                         : "bg-slate-800/40 border-slate-700 opacity-60"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#0d9488]">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#00a3a6]">
                         {node.category}
                       </span>
                       <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
@@ -75,7 +75,7 @@ export default function NodeGraphView({ appState, onInspectNode }) {
                 {/* Arrow Connector */}
                 {idx < nodes.length - 1 && (
                   <div className="text-slate-500 flex items-center justify-center">
-                    <ArrowRight className="w-5 h-5 text-[#ea580c]" />
+                    <ArrowRight className="w-5 h-5 text-[#f7901e]" />
                   </div>
                 )}
               </React.Fragment>
